@@ -1,73 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Stable A-Frame -->
-    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Local aframe-ar -->
-    <script src="./aframe-ar-main/dist/aframe-ar.min.js"></script>
-    <title>MarkLess</title>
+  <!-- A-Frame -->
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+
+  <!-- AR.js CDN -->
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+
+  <title>AR Working</title>
 </head>
-<body>
-    <script>
-      function showMessage(message){
-        let hud = document.querySelector("#hud");
-        hud.setAttribute('value', message);
-      }
 
-        AFRAME.registerComponent('ar-logic',{
-            init: function(){
-                showMessage('ar-logic running');
-            },
-            tick : function(){
-              let cam = document.querySelector("#cam");
-              if(!cam){return;}
-              showMessage('cam detected');
-              let collision = cam.components.raycaster.getIntersection(this.el);
-              if(!collision){return;}
-              showMessage('Occured collision' + collision.point.x.toFixed(2) + " " + collision.point.z.toFixed(2));
-              let circle = document.querySelector("#circle");
-              circle.setAttribute('position', collision.point);
-            }
-        });
+<body style="margin:0; overflow:hidden;">
 
-        window.addEventListener('touchstart', function(){
-          let box = document.querySelector("#box");
-          let circle = document.querySelector("#circle");
-          let pos = circle.getAttribute('position');
+<a-scene
+  embedded
+  vr-mode-ui="enabled: false"
+  arjs="sourceType: webcam; debugUIEnabled: false;"
+>
 
-          box.setAttribute('position', pos);
-        });
+  <!-- Camera -->
+  <a-camera position="0 1.6 0"></a-camera>
 
-    </script>
+  <!-- Tap to Place Box -->
+  <a-box
+    id="box"
+    position="0 0 -2"
+    color="red"
+    scale="0.5 0.5 0.5"
+  ></a-box>
 
+</a-scene>
 
-    <a-scene ar ar-logic>
-        <a-camera id="cam" ar-raycaster raycaster="objects:none;">
-          <a-text id="hud" 
-            value="Summa Text" 
-            position="0 -0.1 -0.25"
-            align="center"
-            wrap-count="800"
-          ></a-text>
-        </a-camera>
-    
-        <a-ring
-          id="circle"
-          rotation="-90 0 0"
-          radius-inner="0.01"
-          radius-outer="0.02">
-        </a-ring>
-    
-        <!-- <a-box id="box" position="0 0 -1" color="red" scale="0.2 0.2 0.2"></a-box> -->
-        <a-gltf-model id="box"
-          src="model/arCar.glb"
-          scale="5 5 5"
-          position="0 0 0"
-        ></a-gltf-model>
-    
-    </a-scene>
+<script>
+  window.addEventListener("click", function () {
+    let box = document.querySelector("#box");
+
+    // Random position in front
+    let x = (Math.random() - 0.5) * 2;
+    let z = - (Math.random() * 3 + 1);
+
+    box.setAttribute("position", {x: x, y: 0, z: z});
+  });
+</script>
+
 </body>
 </html>
